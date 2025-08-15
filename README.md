@@ -53,43 +53,39 @@ forces.csv: total force history
 
 4. Physical Assumptions and Simplifications
 Hydrodynamics
-Radiation forces: Linear convolution model using precomputed memory kernels from Bij frequency data. Off-diagonal terms ignored; only diagonal (same-DOF) terms are used.
-Diffraction forces: Linear convolution of wave elevation history with precomputed diffraction kernels. Only load component 0 is kept (surge direction).
-Added mass: Infinite-frequency added mass A_inf is applied only on the diagonal.
+  - Radiation forces: Linear convolution model using precomputed memory kernels from Bij frequency data. Off-diagonal terms ignored; only diagonal (same-DOF) terms are used.
+  - Diffraction forces: Linear convolution of wave elevation history with precomputed diffraction kernels. Only load component 0 is kept (surge direction).
+  - Added mass: Infinite-frequency added mass A_inf is applied only on the diagonal.
 
 Waves
-Regular (monochromatic) Airy wave model: wave_kinematics_vectorized computes wave elevation and horizontal velocity from wave height H, period T, and wavelength L. No spectral waves or directional spreading.
-
-Only x-direction propagation is modeled; sway-direction wave kinematics are ignored.
-
-No nonlinear wave-body interaction terms.
+  - Regular (monochromatic) Airy wave model: wave_kinematics_vectorized computes wave elevation and horizontal velocity from wave height H, period T, and wavelength L. No spectral waves or directional spreading.
+  Only x-direction propagation is modeled; sway-direction wave kinematics are ignored.
+  No nonlinear wave-body interaction terms.
 
 Viscous forces
-Surge drag: Morison-type quadratic drag integrated along two main columns plus a scaled contribution from the third.
-
-Roll & pitch damping: No hydrodynamic computation; replaced by constant empirical quadratic damping coefficients Bq_roll and Bq_pitch.
+  - Surge drag: Morison-type quadratic drag integrated along two main columns plus a scaled contribution from the third.
+  - Roll & pitch damping: No hydrodynamic computation; replaced by constant empirical quadratic damping coefficients Bq_roll and Bq_pitch.
 
 Mooring
-Mooring restoring force is diagonal and obtained by interpolating precomputed stiffness matrices versus displacement for each DOF.
-
-No dynamic mooring line effects; purely quasi-static stiffness.
+  - Mooring restoring force is diagonal and obtained by interpolating precomputed stiffness matrices versus displacement for each DOF.
+  - No dynamic mooring line effects; purely quasi-static stiffness.
 
 Wind
-Steady constant thrust magnitude (wind_force_magnitude) and application height are user-specified. No wind spectrum, turbulence, or aerodynamic modeling.
+ -  Steady constant thrust magnitude (wind_force_magnitude) and application height are user-specified. No wind spectrum, turbulence, or aerodynamic modeling.
 
 Hydrostatics
-Purely linear restoring proportional to displacement, from diagonal entries of C.
+  - Purely linear restoring proportional to displacement, from diagonal entries of C.
 
 5. Numerical Assumptions
-Time integration: Explicit RK45 with max_step=dt.
-Kernels: Precomputed up to t_max = simulation end time.
-Initial conditions: Default initial displacements [0, 0, -0.03, 10°, 10°, 0] and zero velocities.
-Pre-fill: Initial histories are zero for 1 second before simulation start to allow convolution terms to initialize.
+1) Time integration: Explicit RK45 with max_step=dt.
+2) Kernels: Precomputed up to t_max = simulation end time.
+3) Initial conditions: Default initial displacements [0, 0, -0.03, 10°, 10°, 0] and zero velocities.
+4) Pre-fill: Initial histories are zero for 1 second before simulation start to allow convolution terms to initialize.
 
 6. Limitations
-Off-diagonal hydrodynamic coupling terms (Aij, Bij) are ignored in radiation.
-No nonlinear hydrostatics or large-angle restoring.
-No aerodynamic torque modeling; only surge and pitch moment from steady wind thrust.
-Regular waves only; irregular seas require modification.
-Viscous drag is simplified and may not match experimental values without calibration.
+- Off-diagonal hydrodynamic coupling terms (Aij, Bij) are ignored in radiation.
+- No nonlinear hydrostatics or large-angle restoring.
+- No aerodynamic torque modeling; only surge and pitch moment from steady wind thrust.
+- Regular waves only; irregular seas require modification.
+- Viscous drag is simplified and may not match experimental values without calibration.
 
